@@ -1,39 +1,82 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<title>Mini App</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-<style>
-body {
-  background:#0f0f0f;
-  color:white;
-  font-family:sans-serif;
-  text-align:center;
-}
-button {
-  font-size:24px;
-  padding:20px;
-  border-radius:15px;
-}
-</style>
+  <meta charset="UTF-8">
+  <title>Mini App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      background: #0f0f0f;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+
+    h1 {
+      margin-top: 30px;
+      font-size: 28px;
+    }
+
+    .stats {
+      margin: 15px;
+      font-size: 18px;
+    }
+
+    .tap-btn {
+      margin-top: 40px;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      font-size: 26px;
+      font-weight: bold;
+      border: none;
+      background: linear-gradient(145deg, #ffcc00, #ff9900);
+      color: black;
+      box-shadow: 0 0 25px #ffb300;
+      cursor: pointer;
+    }
+
+    .tap-btn:active {
+      transform: scale(0.95);
+    }
+
+    .energy {
+      margin-top: 20px;
+      font-size: 16px;
+      opacity: 0.8;
+    }
+  </style>
 </head>
 <body>
 
-<h1>🐹 MINI APP</h1>
-<h2 id="coins">0</h2>
-<button onclick="tap()">TAP</button>
+  <h1>🐹 HAMSTER MINI</h1>
 
-<script>
-const tg = Telegram.WebApp;
-tg.expand();
+  <div class="stats">
+    💰 Монеты: <span id="coins">0</span>
+  </div>
 
-let coins = 0;
-function tap() {
-  coins++;
-  document.getElementById("coins").innerText = coins;
-}
-</script>
+  <button class="tap-btn" onclick="tap()">TAP</button>
+
+  <div class="energy">
+    ⚡ Энергия: <span id="energy">1000000000000</span>
+  </div>
+
+  <script>
+    let coins = 0;
+    let energy = 1000000000000; // 1 КККК
+    let tapPower = 1;
+
+    function tap() {
+      if (energy <= 0) return;
+
+      coins += tapPower;
+      energy--; // если хочешь бесконечную — уберу
+
+      document.getElementById("coins").innerText = coins;
+      document.getElementById("energy").innerText = energy;
+    }
+  </script>
 
 </body>
 </html>
