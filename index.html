@@ -2,152 +2,184 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>Hamster Style</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
 
 <style>
-* {
-  box-sizing: border-box;
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
+html,body{
+  width:100%;height:100%;
+  background:radial-gradient(circle at top,#1d2550,#080b1a);
+  color:#fff;overflow:hidden;
+  touch-action:manipulation;
+  user-select:none;
 }
-body {
-  margin: 0;
-  background: radial-gradient(circle at top, #1b1f3b, #0b0f1f);
-  color: #fff;
-  font-family: Arial, sans-serif;
-  text-align: center;
-}
+.app{text-align:center;padding-top:20px}
+h1{font-size:22px;margin-bottom:8px}
+.coins{font-size:42px;font-weight:bold}
+.level{opacity:.8;margin-bottom:15px}
 
-.header {
-  padding: 15px;
-  font-size: 22px;
-  font-weight: bold;
+.circle{
+  width:260px;height:260px;border-radius:50%;
+  margin:0 auto;
+  background:radial-gradient(circle,#ffd54f,#ff9800);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 30px rgba(255,200,0,.6);
+  transition:transform .08s;
 }
+.circle:active{transform:scale(.9)}
+.coin{font-size:90px}
 
-.coins {
-  font-size: 36px;
-  margin: 10px 0;
-}
+.energy-box{width:90%;margin:20px auto}
+.energy-text{font-size:14px;margin-bottom:6px}
+.energy-bar{height:14px;background:#222;border-radius:10px;overflow:hidden}
+.energy-fill{height:100%;background:linear-gradient(90deg,#00ffcc,#00ffaa)}
 
-.level {
-  font-size: 14px;
-  opacity: 0.8;
+.menu{
+  position:absolute;bottom:0;width:100%;
+  background:#0c1025;
+  display:flex;justify-content:space-around;
+  padding:10px 0;font-size:14px
 }
+.menu div{opacity:.85}
 
-.circle-wrap {
-  margin: 30px auto;
-  width: 260px;
-  height: 260px;
-  border-radius: 50%;
-  background: linear-gradient(145deg, #2e5cff, #6a00ff);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.panel{
+  position:absolute;top:0;left:0;
+  width:100%;height:100%;
+  background:#050816;
+  display:none;flex-direction:column;
+  padding:20px;overflow:auto
 }
+.panel h2{margin-bottom:15px}
 
-.circle {
-  width: 220px;
-  height: 220px;
-  border-radius: 50%;
-  background: radial-gradient(circle, #ffd966, #ff9f00);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 80px;
-  cursor: pointer;
-  user-select: none;
+.btn{
+  background:#1d2550;
+  padding:12px;margin-bottom:10px;
+  border-radius:12px;font-size:16px
 }
-
-.energy {
-  margin-top: 20px;
-  font-size: 16px;
-}
-
-.energy-bar {
-  width: 80%;
-  height: 12px;
-  background: #333;
-  margin: 10px auto;
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-.energy-fill {
-  height: 100%;
-  width: 100%;
-  background: linear-gradient(90deg, #00ffcc, #00ffaa);
-}
-
-.bottom {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  background: #0f1225;
-  display: flex;
-  justify-content: space-around;
-  padding: 10px 0;
-}
-
-.btn {
-  font-size: 14px;
-  opacity: 0.8;
-}
+.btn:active{opacity:.7}
 </style>
 </head>
 
 <body>
 
-<div class="header">🐹 HAMSTER STYLE</div>
+<div class="app">
+  <h1>🐹 HAMSTER STYLE</h1>
+  <div class="coins" id="coins">0</div>
+  <div class="level" id="level">Уровень 1</div>
 
-<div class="coins" id="coins">0</div>
-<div class="level">Уровень <span id="level">1</span></div>
+  <div class="circle" id="tap">
+    <div class="coin">🪙</div>
+  </div>
 
-<div class="circle-wrap">
-  <div class="circle" onclick="tap()">🪙</div>
-</div>
-
-<div class="energy">
-  ⚡ Энергия: <span id="energyText">1000000000</span>
-  <div class="energy-bar">
-    <div class="energy-fill" id="energyFill"></div>
+  <div class="energy-box">
+    <div class="energy-text" id="energyText">⚡ Энергия: 1000000000</div>
+    <div class="energy-bar">
+      <div class="energy-fill" id="energyFill"></div>
+    </div>
   </div>
 </div>
 
-<div class="bottom">
-  <div class="btn">👆 Тап</div>
-  <div class="btn">📊 Доход</div>
-  <div class="btn">🏆 Топ</div>
+<!-- МЕНЮ -->
+<div class="menu">
+  <div onclick="openShop()">⚡ Улучшения</div>
+  <div onclick="openTop()">🏆 Топ</div>
+</div>
+
+<!-- МАГАЗИН -->
+<div class="panel" id="shop">
+  <h2>⚡ Улучшения</h2>
+  <div class="btn" onclick="buy(5)">x5 — 500</div>
+  <div class="btn" onclick="buy(10)">x10 — 2000</div>
+  <div class="btn" onclick="buy(15)">x15 — 5000</div>
+  <div class="btn" onclick="buy(20)">x20 — 10000</div>
+  <div class="btn" onclick="closePanels()">❌ Закрыть</div>
+</div>
+
+<!-- ТОП -->
+<div class="panel" id="top">
+  <h2>🏆 ТОП 10</h2>
+  <div id="topList"></div>
+  <div class="btn" onclick="closePanels()">❌ Закрыть</div>
 </div>
 
 <script>
-const tg = Telegram.WebApp;
-tg.expand();
+let coins=0, level=1;
+let tapPower=1;
+let maxEnergy=1000000000, energy=maxEnergy;
 
-let coins = Number(localStorage.getItem("coins")) || 0;
-let energy = Number(localStorage.getItem("energy")) || 1000000000;
-let level = Number(localStorage.getItem("level")) || 1;
+const coinsEl=document.getElementById("coins");
+const levelEl=document.getElementById("level");
+const energyText=document.getElementById("energyText");
+const energyFill=document.getElementById("energyFill");
+const tap=document.getElementById("tap");
 
-function updateUI() {
-  document.getElementById("coins").innerText = coins;
-  document.getElementById("energyText").innerText = energy;
-  document.getElementById("level").innerText = level;
+function updateUI(){
+  coinsEl.textContent=coins;
+  levelEl.textContent="Уровень "+level;
+  energyText.textContent="⚡ Энергия: "+energy;
+  energyFill.style.width=(energy/maxEnergy*100)+"%";
 }
 
-function tap() {
-  if (energy <= 0) return;
-
-  coins += level;
-  energy -= 1;
-
-  if (coins >= level * 1000) {
-    level++;
-  }
-
-  localStorage.setItem("coins", coins);
-  localStorage.setItem("energy", energy);
-  localStorage.setItem("level", level);
-
+tap.onclick=()=>{
+  if(energy<=0)return;
+  coins+=tapPower;
+  energy--;
+  if(coins%200===0)level++;
+  tap.style.transform="scale(.88)";
+  setTimeout(()=>tap.style.transform="scale(1)",80);
+  if(navigator.vibrate)navigator.vibrate(15);
+  saveTop();
   updateUI();
+};
+
+setInterval(()=>{
+  if(energy<maxEnergy){
+    energy+=5000;
+    if(energy>maxEnergy)energy=maxEnergy;
+    updateUI();
+  }
+},1000);
+
+// УЛУЧШЕНИЯ
+function buy(x){
+  let price=x*x*20;
+  if(coins>=price){
+    coins-=price;
+    tapPower=x;
+    alert("Теперь x"+x);
+    updateUI();
+  }else alert("Мало монет");
 }
+
+// ТОП
+function saveTop(){
+  let top=JSON.parse(localStorage.getItem("top")||"[]");
+  top.push(coins);
+  top=top.sort((a,b)=>b-a).slice(0,10);
+  localStorage.setItem("top",JSON.stringify(top));
+}
+
+function openTop(){
+  document.getElementById("top").style.display="flex";
+  let list=document.getElementById("topList");
+  let top=JSON.parse(localStorage.getItem("top")||"[]");
+  list.innerHTML=top.map((v,i)=>`${i+1}. ${v}`).join("<br>");
+}
+
+function openShop(){document.getElementById("shop").style.display="flex"}
+function closePanels(){
+  document.getElementById("shop").style.display="none";
+  document.getElementById("top").style.display="none";
+}
+
+// anti zoom
+let last=0;
+document.addEventListener("touchend",e=>{
+  let now=Date.now();
+  if(now-last<300)e.preventDefault();
+  last=now;
+},{passive:false});
 
 updateUI();
 </script>
