@@ -1,82 +1,156 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>Mini App</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body {
-      margin: 0;
-      background: #0f0f0f;
-      color: white;
-      font-family: Arial, sans-serif;
-      text-align: center;
-    }
+<meta charset="UTF-8">
+<title>Hamster Style</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-    h1 {
-      margin-top: 30px;
-      font-size: 28px;
-    }
+<style>
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: radial-gradient(circle at top, #1b1f3b, #0b0f1f);
+  color: #fff;
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
 
-    .stats {
-      margin: 15px;
-      font-size: 18px;
-    }
+.header {
+  padding: 15px;
+  font-size: 22px;
+  font-weight: bold;
+}
 
-    .tap-btn {
-      margin-top: 40px;
-      width: 180px;
-      height: 180px;
-      border-radius: 50%;
-      font-size: 26px;
-      font-weight: bold;
-      border: none;
-      background: linear-gradient(145deg, #ffcc00, #ff9900);
-      color: black;
-      box-shadow: 0 0 25px #ffb300;
-      cursor: pointer;
-    }
+.coins {
+  font-size: 36px;
+  margin: 10px 0;
+}
 
-    .tap-btn:active {
-      transform: scale(0.95);
-    }
+.level {
+  font-size: 14px;
+  opacity: 0.8;
+}
 
-    .energy {
-      margin-top: 20px;
-      font-size: 16px;
-      opacity: 0.8;
-    }
-  </style>
+.circle-wrap {
+  margin: 30px auto;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #2e5cff, #6a00ff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.circle {
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffd966, #ff9f00);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 80px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.energy {
+  margin-top: 20px;
+  font-size: 16px;
+}
+
+.energy-bar {
+  width: 80%;
+  height: 12px;
+  background: #333;
+  margin: 10px auto;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.energy-fill {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #00ffcc, #00ffaa);
+}
+
+.bottom {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: #0f1225;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0;
+}
+
+.btn {
+  font-size: 14px;
+  opacity: 0.8;
+}
+</style>
 </head>
+
 <body>
 
-  <h1>🐹 HAMSTER MINI</h1>
+<div class="header">🐹 HAMSTER STYLE</div>
 
-  <div class="stats">
-    💰 Монеты: <span id="coins">0</span>
+<div class="coins" id="coins">0</div>
+<div class="level">Уровень <span id="level">1</span></div>
+
+<div class="circle-wrap">
+  <div class="circle" onclick="tap()">🪙</div>
+</div>
+
+<div class="energy">
+  ⚡ Энергия: <span id="energyText">1000000000</span>
+  <div class="energy-bar">
+    <div class="energy-fill" id="energyFill"></div>
   </div>
+</div>
 
-  <button class="tap-btn" onclick="tap()">TAP</button>
+<div class="bottom">
+  <div class="btn">👆 Тап</div>
+  <div class="btn">📊 Доход</div>
+  <div class="btn">🏆 Топ</div>
+</div>
 
-  <div class="energy">
-    ⚡ Энергия: <span id="energy">1000000000000</span>
-  </div>
+<script>
+const tg = Telegram.WebApp;
+tg.expand();
 
-  <script>
-    let coins = 0;
-    let energy = 1000000000000; // 1 КККК
-    let tapPower = 1;
+let coins = Number(localStorage.getItem("coins")) || 0;
+let energy = Number(localStorage.getItem("energy")) || 1000000000;
+let level = Number(localStorage.getItem("level")) || 1;
 
-    function tap() {
-      if (energy <= 0) return;
+function updateUI() {
+  document.getElementById("coins").innerText = coins;
+  document.getElementById("energyText").innerText = energy;
+  document.getElementById("level").innerText = level;
+}
 
-      coins += tapPower;
-      energy--; // если хочешь бесконечную — уберу
+function tap() {
+  if (energy <= 0) return;
 
-      document.getElementById("coins").innerText = coins;
-      document.getElementById("energy").innerText = energy;
-    }
-  </script>
+  coins += level;
+  energy -= 1;
+
+  if (coins >= level * 1000) {
+    level++;
+  }
+
+  localStorage.setItem("coins", coins);
+  localStorage.setItem("energy", energy);
+  localStorage.setItem("level", level);
+
+  updateUI();
+}
+
+updateUI();
+</script>
 
 </body>
 </html>
